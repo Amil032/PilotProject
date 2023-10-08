@@ -1,6 +1,6 @@
 import { UploadButton } from "./UploadButton";
 import classes from "./style.module.css";
-export const TableControl = ({ setParsedData, setShowModal }) => {
+export const AnalyseButtons = ({ setParsedData }) => {
   return (
     <div
       style={{
@@ -11,9 +11,11 @@ export const TableControl = ({ setParsedData, setShowModal }) => {
         marginTop:'20px'
       }}
     >
-      <UploadButton setParsedData={setParsedData} />
-      <button className={classes.button} onClick={() => setShowModal(true)}>
-        Add NewData
+     <button className={classes.button} onClick={() => 'ss'}>
+        Analiz-1
+      </button>
+      <button className={classes.button} onClick={() => 'setShowModal(true)'}>
+        Analiz-2
       </button>
     </div>
   );

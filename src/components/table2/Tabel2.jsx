@@ -1,17 +1,18 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import ReactDOM from "react-dom";
 import { TabulatorFull as Tabulator } from "tabulator-tables"; //import Tabulator library
 import { reactFormatter } from "react-tabulator";
 import "tabulator-tables/dist/css/tabulator.min.css"; //import Tabulator stylesheet
 import { EditTwoTone, DeleteTwoTone, HeatMapOutlined } from "@ant-design/icons";
+import { CustomModal } from "../Modal/CustomModal";
+
 function SimpleButton(props) {
   const rowData = props.cell._cell.row.data;
   const row = props.cell._cell.row;
-  console.log(row, "rrrrrrr", rowData);
   // const cellValue = props.cell._cell.value || "Edit | Show";
   switch (props.action) {
     case "edit":
-      return <EditTwoTone onClick={() => props.onSelect(rowData.id)} />;
+      return <EditTwoTone onClick={() => props.onSelect(rowData)} />;
     case "delete":
       return <DeleteTwoTone onClick={() => props.onSelect(rowData.id)} />;
     case "map":
@@ -19,39 +20,39 @@ function SimpleButton(props) {
   }
 }
 
-export const Table2 = ({ parseData, setShowModal }) => {
-  const [lastId, setLastId] = useState();
-
-  useEffect(() => {
-    if (parseData) {
-      const length = parseData.length;
-      setLastId(parseData[length - 1].id);
-    }
-  }, [[parseData]]);
+export const Table2 = ({ parseData, setShowModal, showModal,setActiveTableData }) => {
+  const [value, setValue] = useState({});
+  const [isFiltered,setIsFiltered]=useState(true)
+  const changeHandler = (value, name) => {
+    setValue((prev) => ({ ...prev, [name]: parseFloat(value) }));
+  };
 
   const deleteRowHandler = (row) => {
-    console.log(tabulator.getData("active"), "sdsdsds");
-    tabulator.deleteRow(row);
+    console.log(tabulator.current.getData("active"), "sdsdsds");
+    tabulator.current.deleteRow(row);
     console.log(row);
   };
   const editRowHandler = (row) => {
-    setShowModal(true)
+    setShowModal(true);
+    setValue(row);
     // tabulator.updateRow(row, { len: "bob", wkt: "male" });
   };
-  const addRowHAndler = (data) => {
-    console.log(data);
-    var row = tabulator.getData("active"); //return row component with index of 1
-    // var rowData = row.getData();
-    console.log(row);
-    tabulator.addRow({
-      id: row[0].id + 1,
-      len: 2323232,
-      wkt: "lendfdf(dfdfdf)",
-      status: 0,
-    });
-    setLastId((prev) => prev + 1);
+  const onClickEditRowHandler = () => {
+    value.id?tabulator.current.updateRow(value.id, { ...value }):addRowHAndler()
+    setValue({});
+    setShowModal(false);
+
   };
-  let ref = React.createRef();
+  const addRowHAndler = (data) => {
+    var row = tabulator.current.getData("active"); //return row component with index of 1
+    // var rowData = row.getData();
+    tabulator.current.addRow({
+      id: row[0].id + 1,
+      ...value,
+    });
+  };
+
+  let ref = useRef();
   const editableColumns = [
     {
       title: "id",
@@ -59,6 +60,7 @@ export const Table2 = ({ parseData, setShowModal }) => {
       width: 100,
       headerFilter: "input",
       sorter: "number",
+      headerFilterPlaceholder:'axtar'
     },
     {
       title: "len",
@@ -66,11 +68,21 @@ export const Table2 = ({ parseData, setShowModal }) => {
       width: 150,
       hozAlign: "left",
       headerFilter: "input",
+      headerFilterPlaceholder:'axtar'
     },
     {
       title: "wkt",
       field: "wkt",
       headerFilter: "input",
+      headerFilterPlaceholder:'axtar'
+    },
+    {
+      title: "status",
+      field: "status",
+      headerFilter: "select",
+      headerFilterParams: {values: [0,1,2]},
+      headerFilterPlaceholder:'sec'
+      
     },
     {
       title: "delete",
@@ -97,11 +109,11 @@ export const Table2 = ({ parseData, setShowModal }) => {
       ),
     },
   ];
-  let tabulator = null; //variable to hold your table
+  let tabulator = useRef(null); //variable to hold your table
 
   useEffect(() => {
     //instantiate Tabulator when element is mounted
-    tabulator = new Tabulator(ref, {
+    tabulator.current = new Tabulator(ref, {
       data: parseData, //link data to table
       reactiveData: true, //enable data reactivity
       layout: "fitColumns",
@@ -114,6 +126,29 @@ export const Table2 = ({ parseData, setShowModal }) => {
       ],
     });
   }, [parseData]);
+useEffect(()=>{
+    tabulator.current.on("dataFiltering", function(filters, rows){
+        setIsFiltered(!isFiltered)
+     });
+})
+ 
+     
 
-  return <div ref={(el) => (ref = el)} />;
+ useEffect(()=>{
+    setActiveTableData(tabulator.current.getData('active'))
+ },[isFiltered])
+
+  return (
+    <>
+      <div ref={(el) => (ref = el)} />
+      <CustomModal
+        showModal={showModal}
+        setShowModal={setShowModal}
+        changeHandler={changeHandler}
+        onClickEditRowHandler={onClickEditRowHandler}
+        value={value}
+        setValue={setValue}
+      />
+    </>
+  );
 };
