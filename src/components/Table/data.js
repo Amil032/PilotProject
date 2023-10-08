@@ -96,7 +96,7 @@ export const editableColumns = [
     //   showListOnEmpty: true,
     //   values: colorOptions
     // },
-    headerFilter: "select",
+    headerFilter: "input",
     // headerFilterParams: { values: colorOptions }
   },
   {
@@ -111,6 +111,12 @@ export const editableColumns = [
     title: "",
     field: "",
     width: 40,
+    formatter:"image", formatterParams:{
+        height:"50px",
+        width:"50px",
+        urlPrefix:"http://website.com/images/",
+        urlSuffix:".png",
+    }
     // sorter: (a, b) => a.toString().localeCompare(b.toString()),
     // // editor: MultiSelectEditor,
     // editorParams: { values: petOptions },
