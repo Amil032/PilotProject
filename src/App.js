@@ -1,7 +1,7 @@
 import "./App.css";
 import { useState } from "react";
 import "react-tabulator/lib/styles.css";
-
+import { OpenLayersMap } from "./components/openlayer/Openlayer";
 import { TableControl } from "./components/TableControl/TableControl";
 import { Table2 } from "./components/table2/Tabel2";
 import { PieChart } from "./components/Charts/PieChart";
@@ -36,6 +36,10 @@ console.log(activeTableData,'acttititd')
       <AnalyseButtons setParsedData={setParsedData} />
       {/* <PieChart/> */}
       {activeTableData&&<BarChart2 data={activeTableData}/>}
+      <div style={{height:'200px'}}>
+      <OpenLayersMap/>
+      </div>
+      
       {/* {activeTableData&&<BarChart data={activeTableData}/>} */}
       {activeTableData&&<PieChart2 data={activeTableData}/>}
     </div>
