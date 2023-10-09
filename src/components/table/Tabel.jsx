@@ -56,7 +56,7 @@ export const Table = ({
     setShowModal(false);
   };
   const addRowHAndler = (data) => {
-    var row = tabulator.current.getData("active"); //return row component with index of 1
+    var row = tabulator.current.getData(); //return row component with index of 1
     // var rowData = row.getData();
     tabulator.current.addRow({
       id: row[0].id + 1,
@@ -102,6 +102,7 @@ export const Table = ({
       title: "",
       field: "",
       width: 40,
+      headerSort:false,
       formatter: reactFormatter(
         <SimpleButton action="delete" onSelect={deleteRowHandler} />
       ),
@@ -110,6 +111,7 @@ export const Table = ({
       title: "",
       field: "",
       width: 40,
+      headerSort:false,
       formatter: reactFormatter(
         <SimpleButton action="edit" onSelect={editRowHandler} />
       ),
@@ -118,6 +120,7 @@ export const Table = ({
       title: "",
       field: "",
       width: 40,
+      headerSort:false,
       formatter: reactFormatter(
         <SimpleButton action="map" onSelect={showOnmapHandler} />
       ),
@@ -135,8 +138,7 @@ export const Table = ({
       paginationSize: 10,
       columns: editableColumns, //define table columns
       initialSort: [
-        { column: "id", dir: "desc" }, //sort by this first
-        // {column:"height", dir:"desc"}, //then sort by this second
+        { column: "id", dir: "desc" }
       ],
     });
   }, [parseData]);

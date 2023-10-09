@@ -1,5 +1,8 @@
 import React from "react";
+import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { Pie } from "react-chartjs-2";
+
+ChartJS.register(ArcElement, Tooltip, Legend);
 
 export const PieChart = ({ data }) => {
   const statusCounts = data?.reduce((countMap, item) => {
@@ -11,26 +14,6 @@ export const PieChart = ({ data }) => {
     (acc, count) => acc + count,
     0
   );
-  const tooltipOptions = {
-    callbacks: {
-      label: function (tooltipItem, data) {
-        const dataIndex = tooltipItem.index;
-        const dataset = data.datasets[tooltipItem.datasetIndex];
-        const currentValue = dataset.data[dataIndex];
-        const percentage = ((currentValue / total) * 100).toFixed(1) + "%";
-        return `${data.labels[dataIndex]}: ${currentValue} (${percentage})`;
-      },
-    },
-  };
-
-  const options = {
-    plugins: {
-      title: {
-        display: true,
-        text: "Analiz 1",
-      },
-    },
-  };
   const chartData = {
     labels: Object.entries(statusCounts).map(
       (status) =>
@@ -45,17 +28,27 @@ export const PieChart = ({ data }) => {
           "rgba(255, 206, 86, 0.6)",
           // Add more colors as needed
         ],
+        borderColor: [
+          "rgba(255, 99, 132, 1)",
+          "rgba(54, 162, 235, 1)",
+          "rgba(255, 206, 86, 1)",
+        ],
+        borderWidth: 1,
       },
     ],
   };
-
   return (
-    <div style={{ width: "80%" }}>
-      <Pie
-        data={chartData}
-        options={options}
-        style={{ backgroundColor: "white" }}
-      />
+    <div
+      style={{
+        width: "100%",
+        backgroundColor: "white",
+        display: "flex",
+        justifyContent: "center",
+      }}
+    >
+      <div style={{ width: "60%" }}>
+        <Pie data={chartData} />
+      </div>
     </div>
   );
 };

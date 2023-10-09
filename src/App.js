@@ -5,9 +5,10 @@ import { OpenLayersMap } from "./components/openlayer/Openlayer";
 import { TableControl } from "./components/TableControl/TableControl";
 import { Table } from "./components/table/Tabel";
 // import { PieChart, BarChart } from "./components/Charts/PieChart";
-import { PieChart } from './components/Charts/PieChart'
+
 import { BarChart } from "./components/Charts/BarChart";
 import { AnalyseButtons } from "./components/TableControl/AnalyseButtons";
+import {PieChart } from "./components/Charts/PieDiagram"
 function App() {
   const [parseData, setParsedData] = useState();
   const [showModal, setShowModal] = useState(false);
