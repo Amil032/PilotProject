@@ -18,6 +18,7 @@ function App() {
     analyse1: false,
     analyse2: false,
   });
+  
   const anaylseButtonHAndler = (e) => {
     const { name } = e.target;
     setDiagramVisibility((prev) => ({
