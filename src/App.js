@@ -1,47 +1,74 @@
 import "./App.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "react-tabulator/lib/styles.css";
 import { OpenLayersMap } from "./components/openlayer/Openlayer";
 import { TableControl } from "./components/TableControl/TableControl";
-import { Table2 } from "./components/table2/Tabel2";
-import { PieChart } from "./components/Charts/PieChart";
-import { AnalyseButtons } from "./components/TableControl/AnalyseButtons";
-import { PieChart2 } from "./components/Charts/Piechart2";
+import { Table } from "./components/table/Tabel";
+// import { PieChart, BarChart } from "./components/Charts/PieChart";
+import { PieChart } from './components/Charts/PieChart'
 import { BarChart } from "./components/Charts/BarChart";
-import { BarChart2 } from "./components/Charts/BarChart2";
+import { AnalyseButtons } from "./components/TableControl/AnalyseButtons";
 function App() {
   const [parseData, setParsedData] = useState();
   const [showModal, setShowModal] = useState(false);
-  const [activeTableData,setActiveTableData]=useState()
-const anaylseButtonHAndler=()=>{
+  const [activeTableData, setActiveTableData] = useState([])
+  const [lineString, setLineString] = useState(null)
+  const [isFiltered, setIsFiltered] = useState(true);
+  const [unmout, setUnmount] = useState(true)
+  const [diagramsVisibility, setDiagramVisibility] = useState({ analyse1: false, analyse2: false })
+  const anaylseButtonHAndler = (e) => {
+    const { name } = e.target
+    setDiagramVisibility(prev => ({ analyse1: false, analyse2: false, [name]: true }))
+    setIsFiltered(!isFiltered)
+  }
 
-}
-console.log(activeTableData,'acttititd')
-
+  useEffect(() => {
+    setUnmount(true)
+  }, [lineString])
   return (
     <div className="App">
       <TableControl setParsedData={setParsedData} setShowModal={setShowModal} />
-      <div
+      <div style={{ display: 'flex' }}>
+        <div
+          style={{
+            width: "50%",
+            backgroundColor: "#555555",
+            padding: "10px",
+            marginTop: "20px",
+          }}
+        >
+          {/* <TabulatorTable parseData={parseData} setShowModal={setShowModal} /> */}
+          <Table
+            parseData={parseData}
+            setShowModal={setShowModal}
+            showModal={showModal}
+            setActiveTableData={setActiveTableData}
+            setIsFiltered={setIsFiltered}
+            isFiltered={isFiltered}
+            setLineString={setLineString}
+            setUnmount={setUnmount}
+
+          />
+
+        </div>
+        {(lineString && unmout) && <div style={{ maxHeight: '200px', width: '50%' }}>
+          <OpenLayersMap lineString={lineString} />
+        </div>}
+      </div>
+
+      <AnalyseButtons setParsedData={setParsedData} anaylseButtonHAndler={anaylseButtonHAndler} />
+      {activeTableData?.length > 0 && <div
         style={{
-          width: "80%",
+          width: "50%",
           backgroundColor: "#555555",
           padding: "10px",
           marginTop: "20px",
         }}
       >
-        {/* <TabulatorTable parseData={parseData} setShowModal={setShowModal} /> */}
-        <Table2 parseData={parseData} setShowModal={setShowModal} showModal={showModal} setActiveTableData={setActiveTableData}/>
-      
-      </div>
-      <AnalyseButtons setParsedData={setParsedData} />
-      {/* <PieChart/> */}
-      {activeTableData&&<BarChart2 data={activeTableData}/>}
-      <div style={{height:'200px'}}>
-      <OpenLayersMap/>
-      </div>
-      
-      {/* {activeTableData&&<BarChart data={activeTableData}/>} */}
-      {activeTableData&&<PieChart2 data={activeTableData}/>}
+        {diagramsVisibility.analyse1 ? <PieChart data={activeTableData} /> :
+
+          diagramsVisibility.analyse2 ? <BarChart data={activeTableData} /> : null}
+      </div>}
     </div>
   );
 }

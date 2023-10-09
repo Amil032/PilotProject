@@ -17,12 +17,23 @@ function SimpleButton(props) {
       return <DeleteTwoTone onClick={() => props.onSelect(rowData.id)} />;
     case "map":
       return <HeatMapOutlined onClick={() => props.onSelect(rowData)} />;
+    default:
+      return null;
   }
 }
 
-export const Table2 = ({ parseData, setShowModal, showModal,setActiveTableData }) => {
+export const Table = ({
+  parseData,
+  setShowModal,
+  showModal,
+  setActiveTableData,
+  setIsFiltered,
+  isFiltered,
+  setLineString,
+  setUnmount,
+}) => {
   const [value, setValue] = useState({});
-  const [isFiltered,setIsFiltered]=useState(true)
+
   const changeHandler = (value, name) => {
     setValue((prev) => ({ ...prev, [name]: parseFloat(value) }));
   };
@@ -38,10 +49,11 @@ export const Table2 = ({ parseData, setShowModal, showModal,setActiveTableData }
     // tabulator.updateRow(row, { len: "bob", wkt: "male" });
   };
   const onClickEditRowHandler = () => {
-    value.id?tabulator.current.updateRow(value.id, { ...value }):addRowHAndler()
+    value.id
+      ? tabulator.current.updateRow(value.id, { ...value })
+      : addRowHAndler();
     setValue({});
     setShowModal(false);
-
   };
   const addRowHAndler = (data) => {
     var row = tabulator.current.getData("active"); //return row component with index of 1
@@ -51,7 +63,10 @@ export const Table2 = ({ parseData, setShowModal, showModal,setActiveTableData }
       ...value,
     });
   };
-
+  const showOnmapHandler = (data) => {
+    setUnmount(false);
+    setLineString(data.wkt);
+  };
   let ref = useRef();
   const editableColumns = [
     {
@@ -60,7 +75,7 @@ export const Table2 = ({ parseData, setShowModal, showModal,setActiveTableData }
       width: 100,
       headerFilter: "input",
       sorter: "number",
-      headerFilterPlaceholder:'axtar'
+      headerFilterPlaceholder: "axtar",
     },
     {
       title: "len",
@@ -68,24 +83,23 @@ export const Table2 = ({ parseData, setShowModal, showModal,setActiveTableData }
       width: 150,
       hozAlign: "left",
       headerFilter: "input",
-      headerFilterPlaceholder:'axtar'
+      headerFilterPlaceholder: "axtar",
     },
     {
       title: "wkt",
       field: "wkt",
       headerFilter: "input",
-      headerFilterPlaceholder:'axtar'
+      headerFilterPlaceholder: "axtar",
     },
     {
       title: "status",
       field: "status",
       headerFilter: "select",
-      headerFilterParams: {values: [0,1,2]},
-      headerFilterPlaceholder:'sec'
-      
+      headerFilterParams: { values: [0, 1, 2] },
+      headerFilterPlaceholder: "sec",
     },
     {
-      title: "delete",
+      title: "",
       field: "",
       width: 40,
       formatter: reactFormatter(
@@ -93,7 +107,7 @@ export const Table2 = ({ parseData, setShowModal, showModal,setActiveTableData }
       ),
     },
     {
-      title: "edit",
+      title: "",
       field: "",
       width: 40,
       formatter: reactFormatter(
@@ -101,11 +115,11 @@ export const Table2 = ({ parseData, setShowModal, showModal,setActiveTableData }
       ),
     },
     {
-      title: "map",
+      title: "",
       field: "",
       width: 40,
       formatter: reactFormatter(
-        <SimpleButton action="map" onSelect={addRowHAndler} />
+        <SimpleButton action="map" onSelect={showOnmapHandler} />
       ),
     },
   ];
@@ -126,17 +140,15 @@ export const Table2 = ({ parseData, setShowModal, showModal,setActiveTableData }
       ],
     });
   }, [parseData]);
-useEffect(()=>{
-    tabulator.current.on("dataFiltering", function(filters, rows){
-        setIsFiltered(!isFiltered)
-     });
-})
- 
-     
+  // useEffect(() => {
+  //   tabulator.current.on("dataFiltering", function (filters, rows) {
+  //     setIsFiltered(!isFiltered);
+  //   });
+  // });
 
- useEffect(()=>{
-    setActiveTableData(tabulator.current.getData('active'))
- },[isFiltered])
+  useEffect(() => {
+    setActiveTableData(tabulator.current.getData("active"));
+  }, [isFiltered]);
 
   return (
     <>

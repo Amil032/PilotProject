@@ -1,67 +1,79 @@
-import React, { useEffect } from 'react';
-import 'ol/ol.css';
-import Map from 'ol/Map';
-import View from 'ol/View';
-import TileLayer from 'ol/layer/Tile';
-import OSM from 'ol/source/OSM';
-import Vector from 'ol/layer/Vector';
-import VectorSource from 'ol/source/Vector';
-import LineString from 'ol/geom/LineString';
-import Feature from 'ol/Feature';
-import { fromLonLat } from 'ol/proj';
-import { easeOut } from 'ol/easing';
-import { Style, Stroke } from 'ol/style';
+import React, { useEffect, useRef, useState } from "react";
+import "ol/ol.css";
+import Map from "ol/Map";
+import View from "ol/View";
+import { Tile as TileLayer, Vector as VectorLayer } from "ol/layer";
+import OSM from "ol/source/OSM";
+import VectorSource from "ol/source/Vector";
+import { LineString } from "ol/geom";
+import { Stroke, Style } from "ol/style";
+import { fromLonLat } from "ol/proj";
+import { easeOut } from "ol/easing";
+import WKT from "ol/format/WKT";
+import { parseLinestring } from "../utils/parseLinestring ";
 
-export const OpenLayersMap = () => {
+export const OpenLayersMap = ({ lineString }) => {
+  const [layer, setLayer] = useState(null);
+  const isFirst = useRef(true);
+  const ref = useRef(null);
+
   useEffect(() => {
-    const initialCoordinates = fromLonLat([50.32495169140619, 40.38989085252759]);
+    // Create a map
+    if (ref.current != null && isFirst.current === true) {
+      isFirst.current = false;
+      const map = new Map({
+        target: ref.current,
+        layers: [
+          new TileLayer({
+            source: new OSM(),
+          }),
+        ],
+      });
 
-    const map = new Map({
-      target: 'mymap1',
-      layers: [
-        new TileLayer({
-          source: new OSM(),
+      // Create a WKT format parser
+      const wktFormat = new WKT();
+
+      // Parse the WKT linestring
+      const wktString = lineString;
+      const feature = wktFormat.readFeature(wktString);
+
+      // Style the linestring with a red color
+      feature.setStyle(
+        new Style({
+          stroke: new Stroke({
+            color: "red",
+            width: "10px",
+          }),
+        })
+      );
+      if (layer) {
+        map.removeLayer(layer);
+      }
+
+      // Create a vector layer and add the linestring feature to it
+      const vectorLayer = new VectorLayer({
+        source: new VectorSource({
+          features: [feature],
         }),
-      ],
-      view: new View({
-        center: initialCoordinates,
-        zoom: 15,
-      }),
-    });
+      });
 
-    const vectorSource = new VectorSource({
-      features: [
-        new Feature({
-          geometry: new LineString([
-            [50.32489718460863, 40.3897112495751],
-            [50.32500619720577, 40.39007045577375],
-          ]),
-        }),
-      ],
-    });
+      // Add the vector layer to the map
 
-    const vectorLayer = new Vector({
-      source: vectorSource,
-      style: new Style({
-        stroke: new Stroke({
-          color: 'red', // Red border color
-          width: 2, // Border width
-        }),
-      }),
-    });
+      map.addLayer(vectorLayer);
+      map.getView().animate({
+        center: fromLonLat(parseLinestring(lineString)),
+        duration: 2000,
+        easing: easeOut,
+        zoom: 16,
+      });
+      setLayer(vectorLayer);
+    }
+  }, [lineString]);
 
-    map.addLayer(vectorLayer);
-
-    // Fly to the specified geometry
-    map.getView().animate({
-      center: fromLonLat([50.32495169140619, 40.38989085252759]),
-      duration: 2000,
-      easing: easeOut,
-      zoom: 16,
-    });
-  }, []);
-
-  return <div id="mymap1" style={{ width: '400px', height: '200px' }}></div>;
+  return (
+    <div
+      ref={ref}
+      style={{ width: "100%", height: "355px", marginTop: "20px" }}
+    ></div>
+  );
 };
-
-
