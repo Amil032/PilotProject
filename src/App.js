@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import "react-tabulator/lib/styles.css";
 import { OpenLayersMap } from "./components/openlayer/Openlayer";
 import { TableControl } from "./components/TableControl/TableControl";
-import { Table } from "./components/Table/Tabel";
+import { Table } from "./components/table/Tabel";
 import { BarChart } from "./components/Charts/BarChart";
 import { AnalyseButtons } from "./components/TableControl/AnalyseButtons";
 import { PieChart } from "./components/Charts/PieDiagram";
