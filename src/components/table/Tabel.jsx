@@ -3,8 +3,8 @@ import ReactDOM from "react-dom";
 import { TabulatorFull as Tabulator } from "tabulator-tables"; //import Tabulator library
 import { reactFormatter } from "react-tabulator";
 import "tabulator-tables/dist/css/tabulator.min.css"; //import Tabulator stylesheet
-import { EditTwoTone, DeleteTwoTone, HeatMapOutlined } from "@ant-design/icons";
-import { CustomModal } from "../Modal/CustomModal";
+import { CustomModal } from "../modal/CustomModal";
+import { Svg } from "../svg/Svg";
 
 function SimpleButton(props) {
   const rowData = props.cell._cell.row.data;
@@ -12,11 +12,11 @@ function SimpleButton(props) {
   // const cellValue = props.cell._cell.value || "Edit | Show";
   switch (props.action) {
     case "edit":
-      return <EditTwoTone onClick={() => props.onSelect(rowData)} />;
+      return <Svg name='edit' color='gray' onClick={() => props.onSelect(rowData)} />;
     case "delete":
-      return <DeleteTwoTone onClick={() => props.onSelect(rowData.id)} />;
+      return <Svg name='delete' color='gray' onClick={() => props.onSelect(rowData.id)} />;
     case "map":
-      return <HeatMapOutlined onClick={() => props.onSelect(rowData)} />;
+      return <Svg name='location' color='gray' onClick={() => props.onSelect(rowData)} />;
     default:
       return null;
   }
@@ -57,7 +57,8 @@ export const Table = ({
   };
   const addRowHAndler = (data) => {
     var row = tabulator.current.getData(); //return row component with index of 1
-    // var rowData = row.getData();
+    const compare=(a,b)=>b.id-a.id
+    row.sort(compare)
     tabulator.current.addRow({
       id: row[0].id + 1,
       ...value,
@@ -75,7 +76,7 @@ export const Table = ({
       width: 100,
       headerFilter: "input",
       sorter: "number",
-      headerFilterPlaceholder: "axtar",
+      headerFilterPlaceholder: "Axtar",
     },
     {
       title: "len",
@@ -83,20 +84,20 @@ export const Table = ({
       width: 150,
       hozAlign: "left",
       headerFilter: "input",
-      headerFilterPlaceholder: "axtar",
+      headerFilterPlaceholder: "Axtar",
     },
     {
       title: "wkt",
       field: "wkt",
       headerFilter: "input",
-      headerFilterPlaceholder: "axtar",
+      headerFilterPlaceholder: "Axtar",
     },
     {
       title: "status",
       field: "status",
       headerFilter: "select",
       headerFilterParams: { values: [0, 1, 2] },
-      headerFilterPlaceholder: "sec",
+      headerFilterPlaceholder: "Seç",
     },
     {
       title: "",
@@ -131,27 +132,25 @@ export const Table = ({
   useEffect(() => {
     //instantiate Tabulator when element is mounted
     tabulator.current = new Tabulator(ref, {
-      data: parseData, //link data to table
-      reactiveData: true, //enable data reactivity
+      data: parseData,
+      reactiveData: true,
       layout: "fitColumns",
-      pagination: "local",
       paginationSize: 10,
-      columns: editableColumns, //define table columns
+      columns: editableColumns,
+      local:'fr',
       initialSort: [
         { column: "id", dir: "desc" }
       ],
     });
+    
   }, [parseData]);
-  // useEffect(() => {
-  //   tabulator.current.on("dataFiltering", function (filters, rows) {
-  //     setIsFiltered(!isFiltered);
-  //   });
-  // });
+ 
 
   useEffect(() => {
     setActiveTableData(tabulator.current.getData("active"));
+console.log(tabulator.current.getData())
+    
   }, [isFiltered]);
-
   return (
     <>
       <div ref={(el) => (ref = el)} />

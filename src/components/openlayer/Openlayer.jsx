@@ -73,7 +73,14 @@ export const OpenLayersMap = ({ lineString }) => {
   return (
     <div
       ref={ref}
-      style={{ width: "100%", height: "355px", marginTop: "20px" }}
+      style={{
+        width: "100%",
+        backgroundColor: "#555555",
+        height: "358px",
+        padding: "10px",
+        marginTop: "20px",
+      }}
+      // style={{ width: "100%", height: "355px", marginTop: "20px" }}
     ></div>
   );
 };
