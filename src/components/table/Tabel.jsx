@@ -135,9 +135,9 @@ export const Table = ({
       data: parseData,
       reactiveData: true,
       layout: "fitColumns",
+      pagination: "local",
       paginationSize: 10,
       columns: editableColumns,
-      local:'fr',
       initialSort: [
         { column: "id", dir: "desc" }
       ],

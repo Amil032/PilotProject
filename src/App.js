@@ -2,10 +2,10 @@ import "./App.css";
 import { useEffect, useState } from "react";
 import "react-tabulator/lib/styles.css";
 import { OpenLayersMap } from "./components/openlayer/Openlayer";
-import { TableControl } from "./components/tableControl/TableControl";
+import { TableControl } from "./components/TableControl/TableControl";
 import { Table } from "./components/Table/Tabel";
 import { BarChart } from "./components/Charts/BarChart";
-import { AnalyseButtons } from "./components/tableControl/AnalyseButtons";
+import { AnalyseButtons } from "./components/TableControl/AnalyseButtons";
 import { PieChart } from "./components/Charts/PieDiagram";
 function App() {
   const [parseData, setParsedData] = useState();
@@ -43,6 +43,7 @@ function App() {
             marginTop: "20px",
           }}
         >
+
           <Table
             parseData={parseData}
             setShowModal={setShowModal}
@@ -55,7 +56,7 @@ function App() {
           />
         </div>
         {lineString && unmout && (
-          <div style={{ maxHeight: "250px", width: "50%" }}>
+          <div style={{ maxHeight: "200px", width: "50%" }}>
             <OpenLayersMap lineString={lineString} />
           </div>
         )}
