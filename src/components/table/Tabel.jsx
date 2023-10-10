@@ -3,7 +3,7 @@ import ReactDOM from "react-dom";
 import { TabulatorFull as Tabulator } from "tabulator-tables"; //import Tabulator library
 import { reactFormatter } from "react-tabulator";
 import "tabulator-tables/dist/css/tabulator.min.css"; //import Tabulator stylesheet
-import { CustomModal } from "../modal/CustomModal";
+import { CustomModal } from "../Modal/CustomModal";
 import { Svg } from "../svg/Svg";
 
 function SimpleButton(props) {
