@@ -1,24 +1,23 @@
 import "./App.css";
 import { useEffect, useState } from "react";
 import "react-tabulator/lib/styles.css";
-import { OpenLayersMap } from "./components/openlayer/Openlayer";
 import { TableControl } from "./components/TableControl/TableControl";
-import { Table } from "./components/table/Tabel";
+import { Table } from "./components/Table/Tabel";
 import { BarChart } from "./components/Charts/BarChart";
 import { AnalyseButtons } from "./components/TableControl/AnalyseButtons";
 import { PieChart } from "./components/Charts/PieDiagram";
+import LineStringMap from "./components/openlayer/OpenLayerLineString";
 function App() {
   const [parseData, setParsedData] = useState();
   const [showModal, setShowModal] = useState(false);
   const [activeTableData, setActiveTableData] = useState([]);
   const [lineString, setLineString] = useState(null);
   const [isFiltered, setIsFiltered] = useState(true);
-  const [unmout, setUnmount] = useState(true);
   const [diagramsVisibility, setDiagramVisibility] = useState({
     analyse1: false,
     analyse2: false,
   });
-  
+
   const anaylseButtonHAndler = (e) => {
     const { name } = e.target;
     setDiagramVisibility((prev) => ({
@@ -29,9 +28,6 @@ function App() {
     setIsFiltered(!isFiltered);
   };
 
-  useEffect(() => {
-    setUnmount(true);
-  }, [lineString]);
   return (
     <div className="App">
       <TableControl setParsedData={setParsedData} setShowModal={setShowModal} />
@@ -44,21 +40,19 @@ function App() {
             marginTop: "20px",
           }}
         >
-
           <Table
             parseData={parseData}
             setShowModal={setShowModal}
             showModal={showModal}
             setActiveTableData={setActiveTableData}
-            setIsFiltered={setIsFiltered}
             isFiltered={isFiltered}
             setLineString={setLineString}
-            setUnmount={setUnmount}
           />
         </div>
-        {lineString && unmout && (
+        {lineString && (
           <div style={{ maxHeight: "200px", width: "50%" }}>
-            <OpenLayersMap lineString={lineString} />
+            {/* <OpenLayersMap lineString={lineString} /> */}
+            <LineStringMap coordinatesString={lineString}/>
           </div>
         )}
       </div>

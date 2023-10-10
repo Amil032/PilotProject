@@ -3,7 +3,7 @@ import ReactDOM from "react-dom";
 import { TabulatorFull as Tabulator } from "tabulator-tables"; //import Tabulator library
 import { reactFormatter } from "react-tabulator";
 import "tabulator-tables/dist/css/tabulator.min.css"; //import Tabulator stylesheet
-import { CustomModal } from "../Modal/CustomModal";
+import { CustomModal } from "../modal/CustomModal";
 import { Svg } from "../svg/Svg";
 
 function SimpleButton(props) {
@@ -12,11 +12,25 @@ function SimpleButton(props) {
   // const cellValue = props.cell._cell.value || "Edit | Show";
   switch (props.action) {
     case "edit":
-      return <Svg name='edit' color='gray' onClick={() => props.onSelect(rowData)} />;
+      return (
+        <Svg name="edit" color="gray" onClick={() => props.onSelect(rowData)} />
+      );
     case "delete":
-      return <Svg name='delete' color='gray' onClick={() => props.onSelect(rowData.id)} />;
+      return (
+        <Svg
+          name="delete"
+          color="gray"
+          onClick={() => props.onSelect(rowData.id)}
+        />
+      );
     case "map":
-      return <Svg name='location' color='gray' onClick={() => props.onSelect(rowData)} />;
+      return (
+        <Svg
+          name="location"
+          color="gray"
+          onClick={() => props.onSelect(rowData)}
+        />
+      );
     default:
       return null;
   }
@@ -27,10 +41,8 @@ export const Table = ({
   setShowModal,
   showModal,
   setActiveTableData,
-  setIsFiltered,
   isFiltered,
   setLineString,
-  setUnmount,
 }) => {
   const [value, setValue] = useState({});
 
@@ -57,15 +69,14 @@ export const Table = ({
   };
   const addRowHAndler = (data) => {
     var row = tabulator.current.getData(); //return row component with index of 1
-    const compare=(a,b)=>b.id-a.id
-    row.sort(compare)
+    const compare = (a, b) => b.id - a.id;
+    row.sort(compare);
     tabulator.current.addRow({
       id: row[0].id + 1,
       ...value,
     });
   };
   const showOnmapHandler = (data) => {
-    setUnmount(false);
     setLineString(data.wkt);
   };
   let ref = useRef();
@@ -103,7 +114,7 @@ export const Table = ({
       title: "",
       field: "",
       width: 40,
-      headerSort:false,
+      headerSort: false,
       formatter: reactFormatter(
         <SimpleButton action="delete" onSelect={deleteRowHandler} />
       ),
@@ -112,7 +123,7 @@ export const Table = ({
       title: "",
       field: "",
       width: 40,
-      headerSort:false,
+      headerSort: false,
       formatter: reactFormatter(
         <SimpleButton action="edit" onSelect={editRowHandler} />
       ),
@@ -121,7 +132,7 @@ export const Table = ({
       title: "",
       field: "",
       width: 40,
-      headerSort:false,
+      headerSort: false,
       formatter: reactFormatter(
         <SimpleButton action="map" onSelect={showOnmapHandler} />
       ),
@@ -138,18 +149,12 @@ export const Table = ({
       pagination: "local",
       paginationSize: 10,
       columns: editableColumns,
-      initialSort: [
-        { column: "id", dir: "desc" }
-      ],
+      initialSort: [{ column: "id", dir: "desc" }],
     });
-    
   }, [parseData]);
- 
 
   useEffect(() => {
     setActiveTableData(tabulator.current.getData("active"));
-console.log(tabulator.current.getData())
-    
   }, [isFiltered]);
   return (
     <>

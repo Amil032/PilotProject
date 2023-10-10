@@ -17,7 +17,9 @@ export const PieChart = ({ data }) => {
   const chartData = {
     labels: Object.entries(statusCounts).map(
       (status) =>
-        `Status${status[0]} ${status[1]} (${Math.round((status[1] / total) * 1000) / 10}%)`
+        `Status${status[0]} ${status[1]} (${
+          Math.round((status[1] / total) * 1000) / 10
+        }%)`
     ),
     datasets: [
       {
